@@ -30,6 +30,6 @@ func Age(seconds float64, planet Planet) float64 {
 			// Invalid input
 			return 0
 	}
-	// Convert seconds to Earth years, and multiply by the orbit period.
+	// Convert seconds to Earth years, and divide by the orbit period.
 	return (seconds / secToYear) / orbitPeriod
 }
