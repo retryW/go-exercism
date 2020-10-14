@@ -1,5 +1,5 @@
 /*
-Package gigasecond provides helperfunctions for working with gigaseconds.
+Package gigasecond provides helper functions for working with gigaseconds.
 A gigasecond is 10^9 (1,000,000,000) seconds.
 */
 package gigasecond
