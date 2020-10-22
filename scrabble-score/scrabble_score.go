@@ -32,6 +32,7 @@ var scores = map[rune]int {
 	'Z': 10,
 }
 
+// Score returns the score any word is worth in the game Scrabble.
 func Score(word string) int {
 
 	wordScore := 0
