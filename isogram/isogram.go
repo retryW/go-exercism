@@ -21,7 +21,7 @@ func IsIsogram(str string) bool {
 			}
 		}
 		// If the character is a letter, add it to the used character list.
-		if match, _ := regexp.MatchString(`[a-zA-Z]`, s); match {
+		if match, _ := regexp.MatchString(`[A-Z]`, s); match {
 			used = append(used, s)
 		}
 	}
