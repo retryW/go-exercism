@@ -4,48 +4,42 @@ package clock
 // Import fmt for string manipulation
 import "fmt"
 
-// A simple Clock type that only tracks hours and minutes
+// A simple Clock type that tracks time based on total minutes
 type Clock struct {
-	hours   int
 	minutes int
 }
 
-// Returns a new 24 hour clock with the given hour and minutes value
+const maxMinutes = 1440
+
+// Returns a new 24 hour clock with the given time
 func New(h, m int) Clock {
-	// Create a blank clock set to 00:00
-	c := Clock{
-		hours:   0,
-		minutes: 0,
+
+	// Create a new clock at 00:00
+	c := Clock{minutes: 0}
+
+	// Calculate the total minutes to adjust the clock by, converting hours to minutes
+	mins := m + h*60
+
+	// If the current time is in the negative, subtract instead of add
+	if mins < 0 {
+		// Return the clock with the subtracted minutes
+		return c.Subtract(mins)
 	}
-	// Calculate the total number of minutes given via input
-	min := (h * 60) + m
-	if min >= 0 {
-		// Total minutes was positive, so add to base clock
-		return c.Add(min)
-	} else {
-		// Total minute was negative, so substract from base clock after converting to a positive integer.
-		return c.Subtract(min * -1)
-	}
+
+	// Return the clock with the added minutes
+	return c.Add(mins)
 }
 
 // Add m minutes to the clock
 func (c Clock) Add(m int) Clock {
 
-	// Add total minutes to clock
+	// Add minutes to clock
 	c.minutes += m
 
-	// While minutes are greater than an hour, process the hour hand
-	for c.minutes > 59 {
-
-		// If the next hour is greater than 23 roll it over to 00, else add the hour as normal
-		if c.hours+1 > 23 {
-			c.hours = 0
-		} else {
-			c.hours++
-		}
-
-		// Remove the added hour from the minutes
-		c.minutes -= 60
+	// Ensure time loops back to the start of the 24 hour period
+	// Use maxMinutes-1 to ensure midnight is the same as zero
+	if c.minutes > maxMinutes-1 {
+		c.minutes %= maxMinutes
 	}
 
 	// Return the clock
@@ -55,21 +49,18 @@ func (c Clock) Add(m int) Clock {
 // Subtract m minutes from the clock
 func (c Clock) Subtract(m int) Clock {
 
-	// Subtract the total minutes from the clock
+	// Make sure the value is a positive integer
+	if m < 0 {
+		m *= -1
+	}
+
+	// Subtract the minutes from the clock
 	c.minutes -= m
 
-	// While the minutes are negative, process hours
-	for c.minutes < 0 {
-
-		// If the previous is less than 0, roll it back to 23, else subtract an hour as normal
-		if c.hours-1 < 0 {
-			c.hours = 23
-		} else {
-			c.hours--
-		}
-
-		// Add the subtracted hour to the minutes
-		c.minutes += 60
+	// Ensure time loops back to the end of the 24 hour period
+	if c.minutes < 0 {
+		// Convert the current minutes to a positive number, then get the modulo, then subtract from midnight for the final time
+		c.minutes = (maxMinutes - (c.minutes * -1 % maxMinutes))
 	}
 
 	// Return the clock
@@ -79,5 +70,5 @@ func (c Clock) Subtract(m int) Clock {
 // Return a string of the clock's current time in 24 hour format HH:mm
 func (c Clock) String() string {
 	// Pad out string with 0's to 2 digits
-	return fmt.Sprintf("%02d:%02d", c.hours, c.minutes)
+	return fmt.Sprintf("%02d:%02d", (c.minutes/60)%24, c.minutes%60)
 }
