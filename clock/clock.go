@@ -4,7 +4,7 @@ package clock
 // Import fmt for string manipulation
 import "fmt"
 
-// A simple Clock type that tracks time based on total minutes
+// Clock is a type that tracks time based on total minutes
 type Clock struct {
 	minutes int
 }
